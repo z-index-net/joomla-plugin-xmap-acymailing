@@ -75,13 +75,13 @@ final class xmap_com_acymailing {
 
 		$query = $db->getQuery(true)
 				->select(array('listid', 'name'))
-				->from('#__acymailing_list')
-				->where('published = 1')
-				->where('type = ' . $db->Quote('list'))
-				->order('ordering');
+				->from('#__acymailing_list AS l')
+				->where('l.published = 1')
+				->where('l.type = ' . $db->Quote('list'))
+				->order('l.ordering');
 
 		if (!$params['show_unauth']) {
-			$query->where('visible = 1');
+			$query->where('l.visible = 1');
 		}
 
 		$db->setQuery($query);
