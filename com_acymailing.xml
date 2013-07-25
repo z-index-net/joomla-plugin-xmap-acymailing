@@ -82,7 +82,7 @@
 			</fieldset>
 		</fields>
 	</config>
-	<!-- <updateservers>
+	<updateservers>
 		<server type="extension" priority="1" name="Xmap - Phoca NEWSLETTER">http://www.z-index.net/en/joomla-xmap-plugins/xmap-acymailing/updatestream.xml</server>
-	</updateservers> -->
+	</updateservers>
 </extension>
