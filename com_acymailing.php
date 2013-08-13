@@ -101,7 +101,6 @@ final class xmap_com_acymailing {
 			$node->browserNav = $parent->browserNav;
 			$node->priority = $params['list_priority'];
 			$node->changefreq = $params['list_changefreq'];
-			$node->pid = $row->parent_id;
 			$node->link = JRoute::_('index.php?option=com_acymailing&ctrl=archive&listid=' . $row->listid . '&Itemid=' . $parent->id);
 				
 			if ($xmap->printNode($node) !== false && $params['include_newsletter']) {
