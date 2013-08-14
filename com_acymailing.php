@@ -13,7 +13,7 @@ final class xmap_com_acymailing {
 
 	private static $views = array('archive', 'lists');
 
-	public static function getTree(XmapXmlDisplayer &$xmap, stdClass &$parent, array &$params) {
+	public static function getTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params) {
 		$uri = new JUri($parent->link);
 
 		if(!in_array($uri->getVar('view'), self::$views)) {
@@ -71,7 +71,7 @@ final class xmap_com_acymailing {
 		}
 	}
 
-	private static function getListsTree(XmapXmlDisplayer &$xmap, stdClass &$parent, array &$params) {
+	private static function getListsTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params) {
 		$db = JFactory::getDbo();
 
 		$query = $db->getQuery(true)
@@ -112,7 +112,7 @@ final class xmap_com_acymailing {
 		$xmap->changeLevel(-1);
 	}
 
-	private static function getNewsletter(XmapXmlDisplayer &$xmap, stdClass &$parent, array &$params, $listid) {
+	private static function getNewsletter(XmapDisplayer &$xmap, stdClass &$parent, array &$params, $listid) {
 		$db = JFactory::getDbo();
 
 		$query = $db->getQuery(true)
