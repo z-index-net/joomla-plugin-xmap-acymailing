@@ -13,13 +13,14 @@ final class xmap_com_acymailing {
 
 	private static $views = array('archive', 'lists');
 
-	public static function getTree(&$xmap, &$parent, &$params) {
+	public static function getTree(XmapXmlDisplayer &$xmap, stdClass &$parent, array &$params) {
 		$uri = new JUri($parent->link);
 
 		if(!in_array($uri->getVar('view'), self::$views)) {
 			return;
 		}
-
+		
+		
 		$include_newsletter = JArrayHelper::getValue($params, 'include_newsletter');
 		$include_newsletter = ($include_newsletter == 1 || ($include_newsletter == 2 && $xmap->view == 'xml') || ($include_newsletter == 3 && $xmap->view == 'html'));
 		$params['include_newsletter'] = $include_newsletter;
@@ -70,7 +71,7 @@ final class xmap_com_acymailing {
 		}
 	}
 
-	private static function getListsTree(&$xmap, &$parent, &$params) {
+	private static function getListsTree(XmapXmlDisplayer &$xmap, stdClass &$parent, array &$params) {
 		$db = JFactory::getDbo();
 
 		$query = $db->getQuery(true)
@@ -111,7 +112,7 @@ final class xmap_com_acymailing {
 		$xmap->changeLevel(-1);
 	}
 
-	private static function getNewsletter(&$xmap, &$parent, &$params, $listid) {
+	private static function getNewsletter(XmapXmlDisplayer &$xmap, stdClass &$parent, array &$params, $listid) {
 		$db = JFactory::getDbo();
 
 		$query = $db->getQuery(true)
@@ -146,7 +147,7 @@ final class xmap_com_acymailing {
 			$node->browserNav = $parent->browserNav;
 			$node->priority = $params['newsletter_priority'];
 			$node->changefreq = $params['newsletter_changefreq'];
-			$node->link = JRoute::_('index.php?option=com_acymailing&ctrl=archive&task=view&listid=' . $row->listid . '&mailid=' . $row->mailid . '&Itemid=' . $parent->id);
+			$node->link = 'index.php?option=com_acymailing&ctrl=archive&task=view&listid=' . $row->listid . '&mailid=' . $row->mailid . '&Itemid=' . $parent->id;
 				
 			$xmap->printNode($node);
 		}
