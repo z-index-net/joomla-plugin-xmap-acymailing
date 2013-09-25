@@ -12,52 +12,50 @@ defined('_JEXEC') or die;
 final class xmap_com_acymailing {
 
 	private static $views = array('archive', 'lists');
+	
+	private static $enabled = false;
+	
+	public function __construct() {
+		self::$enabled = JComponentHelper::isEnabled('com_acymailing');
+	}
 
 	public static function getTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params) {
 		$uri = new JUri($parent->link);
 
-		if(!in_array($uri->getVar('view'), self::$views)) {
+		if(!self::$enabled || !in_array($uri->getVar('view'), self::$views)) {
 			return;
 		}
 		
-		
-		$include_newsletter = JArrayHelper::getValue($params, 'include_newsletter');
-		$include_newsletter = ($include_newsletter == 1 || ($include_newsletter == 2 && $xmap->view == 'xml') || ($include_newsletter == 3 && $xmap->view == 'html'));
-		$params['include_newsletter'] = $include_newsletter;
-
-		$show_unauth = JArrayHelper::getValue($params, 'show_unauth');
-		$show_unauth = ($show_unauth == 1 || ( $show_unauth == 2 && $xmap->view == 'xml') || ( $show_unauth == 3 && $xmap->view == 'html'));
-		$params['show_unauth'] = $show_unauth;
-
 		$params['groups'] = implode(',', JFactory::getUser()->getAuthorisedViewLevels());
+		
+		$params['include_newsletter'] = JArrayHelper::getValue($params, 'include_newsletter', 1);
+		$params['include_newsletter'] = ($params['include_newsletter'] == 1 || ($params['include_newsletter'] == 2 && $xmap->view == 'xml') || ($params['include_newsletter'] == 3 && $xmap->view == 'html'));
 
-		$priority = JArrayHelper::getValue($params, 'list_priority', $parent->priority);
-		$changefreq = JArrayHelper::getValue($params, 'list_changefreq', $parent->changefreq);
+		$params['show_unauth'] = JArrayHelper::getValue($params, 'show_unauth', 0);
+		$params['show_unauth'] = ($params['show_unauth'] == 1 || ( $params['show_unauth'] == 2 && $xmap->view == 'xml') || ( $params['show_unauth'] == 3 && $xmap->view == 'html'));
+		
+		$params['list_priority'] = JArrayHelper::getValue($params, 'list_priority', $parent->priority);
+		$params['list_changefreq'] = JArrayHelper::getValue($params, 'list_changefreq', $parent->changefreq);
 
-		if($priority == -1) {
-			$priority = $parent->priority;
+		if($params['list_priority'] == -1) {
+			$params['list_priority'] = $parent->priority;
 		}
 
-		if($changefreq == -1) {
-			$changefreq = $parent->changefreq;
+		if($params['list_changefreq'] == -1) {
+			$params['list_changefreq'] = $parent->changefreq;
 		}
 			
-		$params['list_priority'] = $priority;
-		$params['list_changefreq'] = $changefreq;
 
-		$priority = JArrayHelper::getValue($params, 'newsletter_priority', $parent->priority);
-		$changefreq = JArrayHelper::getValue($params, 'newsletter_changefreq', $parent->changefreq);
+		$params['newsletter_priority'] = JArrayHelper::getValue($params, 'newsletter_priority', $parent->priority);
+		$params['newsletter_changefreq'] = JArrayHelper::getValue($params, 'newsletter_changefreq', $parent->changefreq);
 
-		if($priority == -1) {
-			$priority = $parent->priority;
+		if($params['newsletter_priority'] == -1) {
+			$params['newsletter_priority'] = $parent->priority;
 		}
 
-		if($changefreq == -1) {
-			$changefreq = $parent->changefreq;
+		if($params['newsletter_changefreq'] == -1) {
+			$params['newsletter_changefreq'] = $parent->changefreq;
 		}
-
-		$params['newsletter_priority'] = $priority;
-		$params['newsletter_changefreq'] = $changefreq;
 
 		switch($uri->getVar('view')) {
 			case 'lists':
