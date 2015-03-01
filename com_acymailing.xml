@@ -16,8 +16,8 @@
         <server type="collection" priority="1" name="z-index development">http://www.z-index.net/en/extensions.xml</server>
     </updateservers>
     <languages folder="language">
-        <language tag="en-GB">eb-GB/en-GB.plg_xmap_com_acymailing.ini</language>
-        <language tag="en-GB">eb-GB/en-GB.plg_xmap_com_acymailing.sys.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_xmap_com_acymailing.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_xmap_com_acymailing.sys.ini</language>
     </languages>
     <config>
         <fields name="params">
