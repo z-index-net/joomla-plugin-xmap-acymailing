@@ -11,8 +11,14 @@ defined('_JEXEC') or die;
 
 class xmap_com_acymailing
 {
+    /**
+     * @var array
+     */
     private static $views = array('archive', 'lists');
 
+    /**
+     * @var bool
+     */
     private static $enabled = false;
 
     public function __construct()
@@ -20,11 +26,19 @@ class xmap_com_acymailing
         self::$enabled = JComponentHelper::isEnabled('com_acymailing');
     }
 
-    public static function getTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params)
+    /**
+     * @param XmapDisplayerInterface $xmap
+     * @param stdClass $parent
+     * @param array $params
+     *
+     * @throws Exception
+     */
+    public static function getTree($xmap, stdClass $parent, array &$params)
     {
         $uri = new JUri($parent->link);
 
-        if (!self::$enabled || !in_array($uri->getVar('view'), self::$views)) {
+        if (!self::$enabled || !in_array($uri->getVar('view'), self::$views))
+        {
             return;
         }
 
@@ -39,11 +53,13 @@ class xmap_com_acymailing
         $params['list_priority'] = JArrayHelper::getValue($params, 'list_priority', $parent->priority);
         $params['list_changefreq'] = JArrayHelper::getValue($params, 'list_changefreq', $parent->changefreq);
 
-        if ($params['list_priority'] == -1) {
+        if ($params['list_priority'] == -1)
+        {
             $params['list_priority'] = $parent->priority;
         }
 
-        if ($params['list_changefreq'] == -1) {
+        if ($params['list_changefreq'] == -1)
+        {
             $params['list_changefreq'] = $parent->changefreq;
         }
 
@@ -51,15 +67,18 @@ class xmap_com_acymailing
         $params['newsletter_priority'] = JArrayHelper::getValue($params, 'newsletter_priority', $parent->priority);
         $params['newsletter_changefreq'] = JArrayHelper::getValue($params, 'newsletter_changefreq', $parent->changefreq);
 
-        if ($params['newsletter_priority'] == -1) {
+        if ($params['newsletter_priority'] == -1)
+        {
             $params['newsletter_priority'] = $parent->priority;
         }
 
-        if ($params['newsletter_changefreq'] == -1) {
+        if ($params['newsletter_changefreq'] == -1)
+        {
             $params['newsletter_changefreq'] = $parent->changefreq;
         }
 
-        switch ($uri->getVar('view')) {
+        switch ($uri->getVar('view'))
+        {
             case 'lists':
                 self::getListsTree($xmap, $parent, $params);
                 break;
@@ -71,7 +90,12 @@ class xmap_com_acymailing
         }
     }
 
-    private static function getListsTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params)
+    /**
+     * @param XmapDisplayerInterface $xmap
+     * @param stdClass $parent
+     * @param array $params
+     */
+    private static function getListsTree($xmap, stdClass $parent, array &$params)
     {
         $db = JFactory::getDbo();
 
@@ -82,20 +106,23 @@ class xmap_com_acymailing
             ->where('l.type = ' . $db->Quote('list'))
             ->order('l.ordering');
 
-        if (!$params['show_unauth']) {
+        if (!$params['show_unauth'])
+        {
             $query->where('l.visible = 1');
         }
 
         $db->setQuery($query);
         $rows = $db->loadObjectList();
 
-        if (empty($rows)) {
+        if (empty($rows))
+        {
             return;
         }
 
         $xmap->changeLevel(1);
 
-        foreach ($rows as $row) {
+        foreach ($rows as $row)
+        {
             $node = new stdclass;
             $node->id = $parent->id;
             $node->name = $row->name;
@@ -105,7 +132,8 @@ class xmap_com_acymailing
             $node->changefreq = $params['list_changefreq'];
             $node->link = 'index.php?option=com_acymailing&ctrl=archive&listid=' . $row->listid . '&Itemid=' . $parent->id;
 
-            if ($xmap->printNode($node) !== false && $params['include_newsletter']) {
+            if ($xmap->printNode($node) !== false && $params['include_newsletter'])
+            {
                 self::getNewsletter($xmap, $parent, $params, $row->listid);
             }
         }
@@ -113,7 +141,13 @@ class xmap_com_acymailing
         $xmap->changeLevel(-1);
     }
 
-    private static function getNewsletter(XmapDisplayer &$xmap, stdClass &$parent, array &$params, $listid)
+    /**
+     * @param XmapDisplayerInterface $xmap
+     * @param stdClass $parent
+     * @param array $params
+     * @param int $listid
+     */
+    private static function getNewsletter($xmap, stdClass $parent, array &$params, $listid)
     {
         $db = JFactory::getDbo();
 
@@ -127,7 +161,8 @@ class xmap_com_acymailing
             ->where('m.published = 1')
             ->order('m.created');
 
-        if (!$params['show_unauth']) {
+        if (!$params['show_unauth'])
+        {
             $query->where('l.visible = 1');
             $query->where('m.visible = 1');
         }
@@ -135,13 +170,15 @@ class xmap_com_acymailing
         $db->setQuery($query);
         $rows = $db->loadObjectList();
 
-        if (empty($rows)) {
+        if (empty($rows))
+        {
             return;
         }
 
         $xmap->changeLevel(1);
 
-        foreach ($rows as $row) {
+        foreach ($rows as $row)
+        {
             $node = new stdclass;
             $node->id = $parent->id;
             $node->name = $row->subject;
